@@ -471,9 +471,7 @@ env_destroy(struct Env *e)
 	env_free(e);
 
 	if (curenv == e) {
-		// cprintf("[%08x] env_destroy %08x\n", curenv ? curenv->env_id : 0, e->env_id);
 		curenv = NULL;
-		// cprintf("[%08x] env_destroy %08x\n", curenv ? curenv->env_id : 0, e->env_id);
 		sched_yield();
 	}
 }

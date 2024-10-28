@@ -242,7 +242,6 @@ sys_page_alloc(envid_t envid, void *va, int perm)
 	if ((r = envid2env(envid, &env, 1)))
 		return r;
 
-	// cprintf("[%08x] page_alloc at %08x\n", env->env_id, va);
 	return env_page_alloc(env, va, perm | PTE_U | PTE_P);
 }
 
@@ -282,14 +281,11 @@ sys_page_map(envid_t srcenvid, void *srcva, envid_t dstenvid, void *dstva, int p
 
 	struct Env *srcenv;
 	struct Env *dstenv;
+
 	if ((r = envid2env(srcenvid, &srcenv, 1)))
 		return r;
 	if ((r = envid2env(dstenvid, &dstenv, 1)))
 		return r;
-
-	// cprintf("[%08x] dstenv %08x\n", dstenv->env_id, dstva);
-	// cprintf("[%08x] srcenv %08x\n", srcenv->env_id, srcva);
-
 
 	return env_page_map(srcenv, srcva, dstenv, dstva, PTE_P | PTE_U | perm);
 }
