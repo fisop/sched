@@ -119,7 +119,9 @@ sys_env_destroy(envid_t envid)
 		cprintf("[%08x] exiting gracefully\n", curenv->env_id);
 	else
 		cprintf("[%08x] destroying %08x\n", curenv->env_id, e->env_id);
+
 	env_destroy(e);
+
 	return 0;
 }
 
@@ -153,7 +155,6 @@ sys_exofork(void)
 	newenv->env_tf.tf_regs.reg_eax = 0;
 
 	return newenv->env_id;
-	// panic("sys_exofork not implemented");
 }
 
 // Set envid's env_status to status, which must be ENV_RUNNABLE
@@ -181,8 +182,8 @@ sys_env_set_status(envid_t envid, int status)
 		return r;
 
 	env->env_status = status;
+
 	return 0;
-	// panic("sys_env_set_status not implemented");
 }
 
 // Set the page fault upcall for 'envid' by modifying the corresponding struct
@@ -204,8 +205,8 @@ sys_env_set_pgfault_upcall(envid_t envid, void *func)
 	user_mem_assert(env, func, PGSIZE, PTE_P | PTE_U);
 
 	env->env_pgfault_upcall = func;
+
 	return 0;
-	// panic("sys_env_set_pgfault_upcall not implemented");
 }
 
 // Allocate a page of memory and map it at 'va' with permission
@@ -311,8 +312,8 @@ sys_page_unmap(envid_t envid, void *va)
 		return r;
 
 	page_remove(env->env_pgdir, va);
+
 	return 0;
-	// panic("sys_page_unmap not implemented");
 }
 
 // Try to send 'value' to the target env 'envid'.
@@ -396,6 +397,7 @@ bail:
 	dstenv->env_ipc_value = value;
 	dstenv->env_tf.tf_regs.reg_eax = 0;
 	dstenv->env_status = ENV_RUNNABLE;
+
 	return 0;
 }
 
@@ -421,7 +423,9 @@ sys_ipc_recv(void *dstva)
 	curenv->env_status = ENV_NOT_RUNNABLE;
 
 	sys_yield();
+
 	panic("sys_ipc_recv should not return!");
+
 	return 0;
 }
 

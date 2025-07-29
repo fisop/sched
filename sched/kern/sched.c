@@ -42,6 +42,7 @@ sched_yield(void)
 	// Your code here - Priorities
 #endif
 
+	// TODO: remove after implementing the scheduler
 	// Without scheduler, keep runing the last environment while it exists
 	if (curenv) {
 		env_run(curenv);
@@ -69,6 +70,10 @@ sched_halt(void)
 	}
 	if (i == NENV) {
 		cprintf("No runnable environments in the system!\n");
+
+		// Once the scheduler has finishied it's work, print statistics
+		// on performance. Your code here
+
 		while (1)
 			monitor(NULL);
 	}
@@ -84,9 +89,6 @@ sched_halt(void)
 
 	// Release the big kernel lock as if we were "leaving" the kernel
 	unlock_kernel();
-
-	// Once the scheduler has finishied it's work, print statistics on
-	// performance. Your code here
 
 	// Reset stack pointer, enable interrupts and then halt.
 	asm volatile("movl $0, %%ebp\n"

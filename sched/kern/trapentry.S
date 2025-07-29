@@ -44,10 +44,6 @@
 
 .text
 
-/*
- * Lab 3: Your code here for generating entry points for the different traps.
- */
-
 TRAPHANDLER_NOEC(trap0, T_DIVIDE)
 TRAPHANDLER_NOEC(trap1, T_DEBUG)
 TRAPHANDLER_NOEC(trap2, T_NMI)
