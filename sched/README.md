@@ -1,6 +1,6 @@
 # sched
 
-Repositorio para el esqueleto del [TP sched](https://fisop.github.io/website/tps/sched) del curso Mendez-Fresia de **Sistemas Operativos (7508) - FIUBA**
+Repositorio para el esqueleto del [TP sched](https://fisop.github.io/website/tps/sched) de la materia: **Sistemas Operativos - FIUBA**
 
 ## Respuestas teóricas
 
