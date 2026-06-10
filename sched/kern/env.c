@@ -275,6 +275,11 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 static void
 region_alloc(struct Env *e, void *va, size_t len)
 {
+	// Hint: It is easier to use region_alloc if the caller can pass
+	//   'va' and 'len' values that are not page-aligned.
+	//   You should round va down, and round (va + len) up.
+	//   (Watch out for corner-cases!)
+
 	uint32_t va_lo = ROUNDDOWN((uint32_t) va, PGSIZE);
 	uint32_t va_hi = ROUNDUP((uint32_t) va + len, PGSIZE);
 	if (va_hi > UTOP)
@@ -287,11 +292,6 @@ region_alloc(struct Env *e, void *va, size_t len)
 		if (page_insert(e->env_pgdir, p, (uint32_t *) va_act, PTE_U | PTE_W))
 			panic("region_alloc: page_insert falied\n");
 	}
-
-	// Hint: It is easier to use region_alloc if the caller can pass
-	//   'va' and 'len' values that are not page-aligned.
-	//   You should round va down, and round (va + len) up.
-	//   (Watch out for corner-cases!)
 }
 
 //
@@ -347,7 +347,7 @@ load_icode(struct Env *e, uint8_t *binary)
 
 	// Get elf file header
 	struct Elf *elf = (struct Elf *) binary;
-	cprintf("%p\n", elf);
+
 	if (elf->e_magic != ELF_MAGIC)
 		panic("load_icode: not an elf file\n");
 
