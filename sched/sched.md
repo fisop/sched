@@ -1,3 +1,14 @@
 # sched
 
-Lugar para respuestas en prosa, seguimientos con GDB y documentación del TP.
+## Sesión de GDB para _context switch_
+
+---
+
+## Scheduler con _prioridades_
+
+---
+
+## Uso de IA
+
+---
+
