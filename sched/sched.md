@@ -4,7 +4,15 @@
 
 ---
 
+## Scheduler con _round robin_ y _timer_
+
+---
+
 ## Scheduler con _prioridades_
+
+---
+
+## Threads
 
 ---
 
