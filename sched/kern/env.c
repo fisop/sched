@@ -290,7 +290,7 @@ region_alloc(struct Env *e, void *va, size_t len)
 		if (!(p = page_alloc(!ALLOC_ZERO)))
 			panic("region_alloc: could not alloc page\n");
 		if (page_insert(e->env_pgdir, p, (uint32_t *) va_act, PTE_U | PTE_W))
-			panic("region_alloc: page_insert falied\n");
+			panic("region_alloc: page_insert failed\n");
 	}
 }
 
@@ -402,6 +402,12 @@ env_create(uint8_t *binary, enum EnvType type)
 //
 // Frees env e and all memory it uses.
 //
+// Part 4: the code below unmaps all of 'e's user-space memory and frees its
+// page directory. A thread (ENV_TYPE_THREAD) shares its env_pgdir with its
+// parent process: freeing it here would destroy the parent's memory and that
+// of the other threads. Consider both directions of the parent/thread
+// relationship when implementing this part.
+//
 void
 env_free(struct Env *e)
 {
@@ -509,7 +515,7 @@ env_run(struct Env *e)
 	// Your code here
 	curenv = e;
 
-	// Needed if we run with multiple procesors
+	// Needed if we run with multiple processors
 	// Record the CPU we are running on for user-space debugging
 	unlock_kernel();
 	curenv->env_cpunum = cpunum();

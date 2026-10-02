@@ -16,6 +16,13 @@ enum {
 	SYS_yield,
 	SYS_ipc_try_send,
 	SYS_ipc_recv,
+	// Part 2: sleep based on timer ticks
+	SYS_sleep,
+	// Part 3: priority handling
+	SYS_getpriority,
+	SYS_setpriority,
+	// Part 4: thread creation
+	SYS_thread_create,
 	NSYSCALLS
 };
 

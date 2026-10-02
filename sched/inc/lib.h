@@ -53,6 +53,13 @@ int sys_page_map(
 int sys_page_unmap(envid_t env, void *pg);
 int sys_ipc_try_send(envid_t to_env, uint32_t value, void *pg, int perm);
 int sys_ipc_recv(void *rcv_pg);
+// Part 2
+int sys_sleep(uint32_t n);
+// Part 3
+int sys_getpriority(envid_t envid);
+int sys_setpriority(envid_t envid, uint32_t priority);
+// Part 4
+envid_t sys_thread_create(void *entry, void *ustack_top);
 
 // This must be inlined.  Exercise for reader: why?
 static inline envid_t __attribute__((always_inline)) sys_exofork(void)
@@ -71,6 +78,9 @@ envid_t ipc_find_env(enum EnvType type);
 #define PTE_SHARE 0x400
 envid_t fork(void);
 envid_t sfork(void);  // Challenge!
+
+// thread.c
+envid_t thread_create(void (*func)(void *), void *arg);
 
 
 /* File open modes */

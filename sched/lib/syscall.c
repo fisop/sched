@@ -112,3 +112,36 @@ sys_ipc_recv(void *dstva)
 {
 	return syscall(SYS_ipc_recv, 1, (uint32_t) dstva, 0, 0, 0, 0);
 }
+
+// Part 2
+int
+sys_sleep(uint32_t n)
+{
+	return syscall(SYS_sleep, 1, n, 0, 0, 0, 0);
+}
+
+// Part 3
+int
+sys_getpriority(envid_t envid)
+{
+	return syscall(SYS_getpriority, 0, envid, 0, 0, 0, 0);
+}
+
+int
+sys_setpriority(envid_t envid, uint32_t priority)
+{
+	return syscall(SYS_setpriority, 1, envid, priority, 0, 0, 0);
+}
+
+// Part 4
+envid_t
+sys_thread_create(void *entry, void *ustack_top)
+{
+	return syscall(SYS_thread_create,
+	               0,
+	               (uint32_t) entry,
+	               (uint32_t) ustack_top,
+	               0,
+	               0,
+	               0);
+}

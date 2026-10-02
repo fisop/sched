@@ -28,6 +28,9 @@ user/faultreadkernel.c
 user/faultnostack.c
 user/breakpoint.c
 user/fairness.c
+user/sleeptest.c
+user/priotest.c
+user/threadtest.c
 user/divzero.c
 user/faultbadhandler.c
 user/buggyhello2.c
@@ -36,6 +39,7 @@ lib/panic.c
 lib/readline.c
 lib/syscall.c
 lib/fork.c
+lib/thread.c
 lib/printfmt.c
 lib/exit.c
 lib/string.c

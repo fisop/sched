@@ -4,40 +4,50 @@
 #include <kern/env.h>
 #include <kern/pmap.h>
 #include <kern/monitor.h>
+#include <kern/trap.h>
 
 void sched_halt(void);
+
+// Wake up environments that were sleeping and whose env_sleep_until <= ticks.
+// The global counter 'ticks' is declared in kern/trap.h.
+// Call from trap_dispatch after incrementing ticks and before sched_yield.
+void
+sched_wakeup_sleeping(void)
+{
+	// Part 2: Your code here - wake up sleeping envs
+}
 
 // Choose a user environment to run and run it.
 void
 sched_yield(void)
 {
 #ifdef SCHED_ROUND_ROBIN
-	// Implement simple round-robin scheduling.
+	// Implement round-robin scheduling with timer preemption.
 	//
-	// Search through 'envs' for an ENV_RUNNABLE environment in
-	// circular fashion starting just after the env this CPU was
-	// last running. Switch to the first such environment found.
+	// Walk 'envs' circularly looking for an ENV_RUNNABLE environment,
+	// starting right after the last environment run on this CPU. Switch
+	// to the first one found.
 	//
-	// If no envs are runnable, but the environment previously
-	// running on this CPU is still ENV_RUNNING, it's okay to
-	// choose that environment.
+	// If no env is runnable but the environment that was running on this
+	// CPU is still ENV_RUNNING, it's fine to pick it again.
 	//
-	// Never choose an environment that's currently running on
-	// another CPU (env_status == ENV_RUNNING). If there are
-	// no runnable environments, simply drop through to the code
-	// below to halt the cpu.
+	// Never pick an environment that's currently running on another CPU
+	// (env_status == ENV_RUNNING). If none is available, fall through
+	// to sched_halt.
 
 	// Your code here - Round robin
 #endif
 
 #ifdef SCHED_PRIORITIES
-	// Implement simple priorities scheduling.
+	// Implement priority scheduling with anti-starvation aging.
 	//
-	// Environments now have a "priority" so it must be consider
-	// when the selection is performed.
+	// Select the ENV_RUNNABLE environment with the highest env_priority.
+	// Increment env_wait_ticks for the environments that are not selected.
+	// Apply aging: if an environment has been waiting too long, temporarily
+	// increase its effective priority to avoid starvation.
 	//
-	// Be careful to not fall in "starvation" such that only one
-	// environment is selected and run every time.
+	// If the selected environment is the same as curenv and it's still
+	// ENV_RUNNING, it's fine to run it again.
 
 	// Your code here - Priorities
 #endif
@@ -62,6 +72,13 @@ sched_halt(void)
 
 	// For debugging and testing purposes, if there are no runnable
 	// environments in the system, then drop into the kernel monitor.
+	//
+	// Part 2: careful, a sleeping process (sys_sleep) is ENV_NOT_RUNNABLE,
+	// so it doesn't count as "runnable" in this check. What happens, then,
+	// if every process is sleeping at the same time? Review this condition
+	// to distinguish "nothing to do right now" (should wait for the timer)
+	// from "no process is left alive" (only then should statistics be
+	// printed and the kernel halted for good).
 	for (i = 0; i < NENV; i++) {
 		if ((envs[i].env_status == ENV_RUNNABLE ||
 		     envs[i].env_status == ENV_RUNNING ||
