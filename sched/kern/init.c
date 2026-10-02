@@ -68,13 +68,18 @@ i386_init(void)
 		ENV_CREATE(TEST, ENV_TYPE_USER);
 #else
 	// Touch all you want.
+	// To run the tests for each part, replace these lines with, e.g.:
+	//   ENV_CREATE(user_sleeptest, ENV_TYPE_USER);   // Part 2
+	//   ENV_CREATE(user_priotest, ENV_TYPE_USER);    // Part 3
+	//   ENV_CREATE(user_threadtest, ENV_TYPE_USER);  // Part 4
+	// The binaries are already declared in kern/Makefrag (KERN_BINFILES).
 	ENV_CREATE(user_hello, ENV_TYPE_USER);
 	ENV_CREATE(user_hello, ENV_TYPE_USER);
 	ENV_CREATE(user_hello, ENV_TYPE_USER);
 #endif  // TEST*
 
-	// Eliminar esta llamada una vez completada la parte 1
-	// e implementado sched_yield().
+	// Remove this call once part 1 is complete
+	// and sched_yield() is implemented.
 	env_run(&envs[0]);
 
 	// Schedule and run the first user environment!

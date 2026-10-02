@@ -6,12 +6,17 @@
 #error "This is a JOS kernel header; user programs should not #include it"
 #endif
 
+#include <inc/types.h>
 #include <inc/trap.h>
 #include <inc/mmu.h>
 
 /* The kernel's interrupt descriptor table */
 extern struct Gatedesc idt[];
 extern struct Pseudodesc idt_pd;
+
+/* Global counter of timer ticks (defined in kern/trap.c).
+ * Part 2: must be incremented on every IRQ_TIMER interrupt. */
+extern uint32_t ticks;
 
 void trap_init(void);
 void trap_init_percpu(void);

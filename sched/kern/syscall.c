@@ -339,8 +339,7 @@ sys_page_unmap(envid_t envid, void *va)
 // then no page mapping is transferred, but no error occurs.
 // The ipc only happens when no errors occur.
 //
-// Returns 0 on success, < 0 on error.
-// Errors are:
+// Returns 0 on success, < 0 on error.  Errors are:
 //	-E_BAD_ENV if environment envid doesn't currently exist.
 //		(No need to check permissions.)
 //	-E_IPC_NOT_RECV if envid is not currently blocked in sys_ipc_recv,
@@ -429,6 +428,67 @@ sys_ipc_recv(void *dstva)
 	return 0;
 }
 
+// Put the current environment to sleep for 'n' timer interrupts.
+// The environment becomes ENV_NOT_RUNNABLE and env_sleep_until is set to
+// (global_ticks + n). The scheduler will wake it up once global_ticks >=
+// env_sleep_until.
+//
+// This function only returns on error, but the system call will eventually
+// return 0 on success.
+// Return < 0 on error.  Errors are:
+//	-E_INVAL if n == 0.
+static int
+sys_sleep(uint32_t n)
+{
+	// Part 2: Your code here
+	//
+	// Hint: See how sys_ipc_recv and sys_ipc_try_send solve the problem
+	// related with not retuning but anyhow setting a "return value".
+	return -E_INVAL;
+}
+
+// Return the priority of the environment envid.
+// Returns < 0 on error.  Errors are:
+//	-E_BAD_ENV if envid doesn't exist or the caller lacks permission.
+static int
+sys_getpriority(envid_t envid)
+{
+	// Part 3: Your code here
+	return -E_INVAL;
+}
+
+// Set the priority of the environment envid to 'priority'.
+// A process CANNOT increase its own priority (only reduce it).
+// A process CAN modify the priority of its direct children.
+//
+// Returns 0 on success, or < 0 on error.  Errors are:
+//	-E_BAD_ENV if envid doesn't exist or without permission.
+// 	-E_INVAL if trying to increase the current process's priority.
+static int
+sys_setpriority(envid_t envid, uint32_t priority)
+{
+	// Part 3: Your code here
+	return -E_INVAL;
+}
+
+// Create a new thread that shares the current process's address
+// space. The thread starts executing at 'entry' with the stack pointing to
+// 'ustack_top'.
+//
+// Unlike fork, the thread does NOT have its own page directory; it uses the
+// same env_pgdir as the parent process. When the parent process terminates,
+// all of its threads are destroyed too.
+//
+// Returns the envid of the new thread on success, or < 0 on error.  Errors are:
+//	-E_NO_FREE_ENV if there are no free entries in the PCB.
+//	-E_INVAL if entry or ustack_top are invalid.
+static envid_t
+sys_thread_create(void *entry, void *ustack_top)
+{
+	// Part 4: Your code here
+	return -E_INVAL;
+}
+
 // Dispatches to the correct kernel function, passing the arguments.
 int32_t
 syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5)
@@ -464,6 +524,14 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 		return sys_env_set_pgfault_upcall(a1, (void *) a2);
 	case SYS_yield:
 		sys_yield();  // No return
+	case SYS_sleep:
+		return sys_sleep(a1);
+	case SYS_getpriority:
+		return sys_getpriority(a1);
+	case SYS_setpriority:
+		return sys_setpriority(a1, a2);
+	case SYS_thread_create:
+		return sys_thread_create((void *) a1, (void *) a2);
 	default:
 		return -E_INVAL;
 	}

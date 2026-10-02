@@ -9,4 +9,8 @@
 // This function does not return.
 void sched_yield(void) __attribute__((noreturn));
 
+// Wake up sleeping environments whose env_sleep_until has already elapsed.
+// Part 2: implement in kern/sched.c, call from trap_dispatch.
+void sched_wakeup_sleeping(void);
+
 #endif  // !JOS_KERN_SCHED_H

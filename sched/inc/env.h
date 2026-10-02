@@ -35,6 +35,7 @@ enum { ENV_FREE = 0, ENV_DYING, ENV_RUNNABLE, ENV_RUNNING, ENV_NOT_RUNNABLE };
 // Special environment types
 enum EnvType {
 	ENV_TYPE_USER = 0,
+	ENV_TYPE_THREAD,  // Part 4: thread that shares its address space with its parent
 };
 
 struct Env {
@@ -59,6 +60,13 @@ struct Env {
 	uint32_t env_ipc_value;  // Data value sent to us
 	envid_t env_ipc_from;    // envid of the sender
 	int env_ipc_perm;        // Perm of page mapping received
+
+	// Part 2: sleep based on timer ticks
+	uint32_t env_sleep_until;  // global tick at which the env should wake up (0 = not sleeping)
+
+	// Part 3: priorities
+	uint32_t env_priority;  // env's priority (higher value = higher priority)
+	uint32_t env_wait_ticks;  // ticks accumulated waiting in the ready queue (for aging)
 };
 
 #endif  // !JOS_INC_ENV_H

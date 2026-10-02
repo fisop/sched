@@ -22,6 +22,10 @@ static struct Taskstate ts;
  */
 static struct Trapframe *last_tf;
 
+// Global counter of timer ticks.
+// Part 2: initialize to 0 and increment on every timer interrupt.
+uint32_t ticks = 0;
+
 /* Interrupt descriptor table.  (Must be built at run time because
  * shifted function addresses can't be represented in relocation records.)
  */
@@ -222,11 +226,15 @@ trap_dispatch(struct Trapframe *tf)
 		return;
 	}
 
-	// Handle clock interrupts. Don't forget to acknowledge the
-	// interrupt using lapic_eoi() before calling the scheduler!
+	// Handle clock interrupts.
+	// - Acknowledge the interrupt using lapic_eoi()
+	// - Increment ticks
+	// - Wake up sleeping environments
+	// - Call the scheduler
 	switch (tf->tf_trapno - IRQ_OFFSET) {
 	case IRQ_TIMER:
 		lapic_eoi();
+		// Part 2: Your code here
 		sched_yield();
 		return;
 	}
@@ -269,7 +277,7 @@ trap(struct Trapframe *tf)
 		lock_kernel();
 		assert(curenv);
 
-		// Garbage collect if current enviroment is a zombie
+		// Garbage collect if current environment is a zombie
 		if (curenv->env_status == ENV_DYING) {
 			env_free(curenv);
 			curenv = NULL;
